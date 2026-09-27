@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Stream;
 import me.aleksilassila.litematica.printer.implementation.CropPlacement;
 import me.aleksilassila.litematica.printer.implementation.EasyPlaceGrassSubstitution;
+import me.aleksilassila.litematica.printer.implementation.PlacementTargets;
+import fi.dy.masa.litematica.materials.MaterialCache;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -111,11 +114,13 @@ class PlacementSubstitutionTest {
         assertTrue(snowy.getValue(BlockStateProperties.SNOWY));
     }
 
-    @Test void redirectsMatchExactlyOneSchematicStateReadInEachInstalledLitematicaMethod() throws Exception {
+    @ParameterizedTest @ValueSource(strings = {"WorldUtils", "EasyPlaceUtils"})
+    void stateReadCountsMatchTheHooksForBothEasyPlaceImplementations(String className) throws Exception {
         var counts = new java.util.HashMap<String, Integer>();
-        counts.put("doEasyPlaceAction", 0);
+        String action = className.equals("WorldUtils") ? "doEasyPlaceAction" : "handleEasyPlace";
+        counts.put(action, 0);
         counts.put("placementRestrictionInEffect", 0);
-        try (var input = getClass().getClassLoader().getResourceAsStream("fi/dy/masa/litematica/util/WorldUtils.class")) {
+        try (var input = getClass().getClassLoader().getResourceAsStream("fi/dy/masa/litematica/util/" + className + ".class")) {
             assertNotNull(input);
             new ClassReader(input).accept(new ClassVisitor(Opcodes.ASM9) {
                 @Override public MethodVisitor visitMethod(int access, String name, String descriptor,
@@ -132,7 +137,57 @@ class PlacementSubstitutionTest {
                 }
             }, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
         }
-        assertEquals(1, counts.get("doEasyPlaceAction"));
-        assertEquals(1, counts.get("placementRestrictionInEffect"));
+        assertEquals(1, counts.get(action));
+        assertEquals(className.equals("WorldUtils") ? 1 : 3, counts.get("placementRestrictionInEffect"));
+    }
+
+    @Test void printerResolvesGrassToDirtAndRequestsDirtFromTheMaterialCache() {
+        var grass = Blocks.GRASS_BLOCK.defaultBlockState();
+        var dirt = new ItemStack(Items.DIRT);
+        var target = PlacementTargets.resolve(grass, Blocks.AIR.defaultBlockState(), true, true,
+                ItemStack.EMPTY, ItemStack.EMPTY, false, List.of(dirt));
+        assertTrue(target.is(Blocks.DIRT));
+        assertTrue(MaterialCache.getInstance().getRequiredBuildItemForState(target).is(Items.DIRT));
+        assertTrue(grass.is(Blocks.GRASS_BLOCK));
+    }
+
+    @Test void placedDirtRemainsCompleteAfterSwitchingToolsOrUsingTheLastDirt() {
+        var grass = Blocks.GRASS_BLOCK.defaultBlockState();
+        var actual = Blocks.DIRT.defaultBlockState();
+        assertSame(actual, PlacementTargets.resolve(grass, actual, true, true,
+                ItemStack.EMPTY, ItemStack.EMPTY, false, List.of()));
+        assertSame(actual, PlacementTargets.resolve(grass, actual, true, true,
+                new ItemStack(Items.GRASS_BLOCK), ItemStack.EMPTY, false, List.of()));
+        assertSame(grass, PlacementTargets.resolve(grass, actual, false, true,
+                ItemStack.EMPTY, ItemStack.EMPTY, false, List.of()));
+    }
+
+    @Test void finishedGrassIsNotTurnedBackIntoADirtTarget() {
+        var grass = Blocks.GRASS_BLOCK.defaultBlockState();
+        var snowy = grass.setValue(BlockStateProperties.SNOWY, true);
+        assertSame(snowy, PlacementTargets.resolve(grass, snowy, true, true,
+                new ItemStack(Items.DIRT), ItemStack.EMPTY, false, List.of()));
+    }
+
+    @Test void printerConstructorActuallyCallsTheSharedResolver() throws Exception {
+        int[] calls = {0};
+        try (var input = getClass().getClassLoader().getResourceAsStream(
+                "me/aleksilassila/litematica/printer/SchematicBlockState.class")) {
+            assertNotNull(input);
+            new ClassReader(input).accept(new ClassVisitor(Opcodes.ASM9) {
+                @Override public MethodVisitor visitMethod(int access, String name, String descriptor,
+                                                            String signature, String[] exceptions) {
+                    if (!name.equals("<init>")) return null;
+                    return new MethodVisitor(Opcodes.ASM9) {
+                        @Override public void visitMethodInsn(int opcode, String owner, String method,
+                                                             String desc, boolean isInterface) {
+                            if (owner.equals("me/aleksilassila/litematica/printer/implementation/PlacementTargets")
+                                    && method.equals("forPlayer")) calls[0]++;
+                        }
+                    };
+                }
+            }, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        }
+        assertEquals(1, calls[0]);
     }
 }

@@ -1,11 +1,11 @@
 # Automatic dirt paths for Minecraft 26.1.2
 
-This fork of sakura-ryoko/litematica-printer's `LTS/26.1` branch adds soil placement and shovel flattening to Litematica Printer 3.2.2. The custom release is `3.2.2-paths.4` and retains the `litematica_printer` mod ID: **replace the original Printer JAR, do not install both**.
+This fork of sakura-ryoko/litematica-printer's `LTS/26.1` branch adds soil placement and shovel flattening to Litematica Printer 3.2.2. The custom release is `3.2.2-paths.5` and retains the `litematica_printer` mod ID: **replace the original Printer JAR, do not install both**.
 
 ## Use
 
 1. Close Minecraft before changing the instance's mods. Back up the original Printer JAR outside the `mods` folder.
-2. Replace it with `litematica-printer-26.1.2-3.2.2-paths.4.jar`.
+2. Replace it with `litematica-printer-26.1.2-3.2.2-paths.5.jar`.
 3. In Litematica's Generic settings (`M + C` by default), enable `makePaths` (default: true) and `interactBlocks`.
 4. Keep dirt and a shovel in your inventory; using the hotbar is the simplest way to test. All seven vanilla shovel materials, including copper, are supported.
 5. Load a schematic containing **dirt path blocks**, enable printing, and move within the configured placement range.
@@ -26,7 +26,7 @@ Mining uses vanilla start/continue/stop destruction, once per actual client inpu
 
 ## Easy Place substitutions and crop age
 
-`easyPlaceDirtForGrass` (default true) allows dirt at schematic grass-block positions with Litematica Easy Place enabled. Dirt in the main hand takes priority, then the offhand. Held grass blocks retain normal placement. In survival, when neither hand contains either material, dirt is selected from inventory only if grass blocks are unavailable. Creative keeps normal grass pick-block unless dirt is explicitly held. Placement restriction uses the same effective target, retaining the existing reach, layer, replaceability and placement checks.
+`easyPlaceDirtForGrass` (default true) allows dirt at schematic grass-block positions in Printer and both Litematica Easy Place implementations. Printer does not require Easy Place mode. Already placed dirt remains accepted after switching tools or exhausting the dirt stack; finished grass remains accepted as well. Dirt in the main hand takes priority, then the offhand. Held grass blocks retain normal placement. In survival, when neither hand contains either material, dirt is selected from inventory only if grass blocks are unavailable. Creative keeps normal grass pick-block unless dirt is explicitly held. Placement restriction uses the same effective target, retaining the existing reach, layer, replaceability and placement checks.
 
 `ignoreCropAge` (default true) applies to Easy Place and Printer. Wheat, carrots, potatoes, beetroots, melon stems, pumpkin stems, nether wart, cocoa and sweet berry bushes are planted at age zero using their normal planting item (seeds, carrots, potatoes, etc.). A crop of the same type already in the world is accepted at any age. Cocoa facing and all non-age properties remain significant. Attached stems, multi-block pitcher crops and unrelated age-bearing blocks are not substituted. Normal farmland/support conditions still apply.
 
@@ -45,6 +45,10 @@ Tools are selected from inventory by base destroy speed, preferring the held ite
 A shared mining controller serializes snow removal and wrong-block removal. It revalidates world/player identity, reach, visibility, settings, layer range and held item each client tick. Wrong-block jobs additionally require both the original schematic state and the actual state to remain unchanged; removal stops if the block becomes air, correct, or another block. Attempts time out after 1200 ticks and may be retried by later enabled scans. The replacement material is needed for placement, not for removal.
 
 Manual checks: Printer on with stone at a schematic plank position; Easy Place only with use held/released; correct/missing mining tool; setting off during mining; view/range/layer/schematic changes; protected chest and bedrock; schematic air; crop age and dirt-for-grass substitutes; existing snow clearing and original log stripping. Live client/multiplayer behavior remains unverified.
+
+## paths.5 fix
+
+Earlier versions applied grass-to-dirt substitution only to the legacy Easy Place path, leaving Printer to request grass items. The shared placement-target resolver is now used by Printer, legacy Easy Place and rewritten Easy Place, including their placement restrictions. Existing dirt is kept complete after inventory or hand changes. Tests now check the Printer call site, dirt material resolution, completed dirt/grass, and hook locations in both Easy Place implementations. No instance config or installed mod is modified by building the artifact.
 
 ## Build and tests
 
