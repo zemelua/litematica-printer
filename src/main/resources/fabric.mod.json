@@ -4,15 +4,15 @@
   "version": "${mod_version}",
   "name": "Litematica Printer",
 
-  "description": "A fork of Litematica that adds the missing printer functionality",
+  "description": "Litematica Printer with automatic dirt-path placement and shovel flattening for Minecraft 26.1.2",
   "authors": [
     "aleksilassila"
   ],
   "contact": {
-    "homepage": "https://github.com/aleksilassila/litematica-printer",
-    "sources": "https://github.com/aleksilassila/litematica-printer"
+    "homepage": "https://github.com/zemelua/litematica-printer",
+    "sources": "https://github.com/zemelua/litematica-printer"
   },
-  "license": "CC0-1.0",
+  "license": "AGPL-3.0-only",
   "icon": "assets/litematica-printer/icon.png",
 
   "environment": "client",

@@ -1,4 +1,7 @@
 {
+    "litematica-printer.config.generic.name.makePaths": "makePaths",
+    "litematica-printer.config.generic.prettyName.makePaths": "土の道を自動作成",
+    "litematica-printer.config.generic.comment.makePaths": "設計図の土の道の位置に土を置き、シャベルで加工します。サバイバルでは土とシャベル、interactBlocksの有効化、対象の上の空気が必要です。雪などの障害物は除去しません。",
     "litematica-printer.config.generic.comment.interactBlocks": "プリンターがブロック状態を設定するかどうか",
     "litematica-printer.config.generic.comment.printInAir": "下にサポートブロックを必要とせず空中にブロックを設置することを許可する",
     "litematica-printer.config.generic.comment.printingDebug": "プリンターのデバッグログを有効化",

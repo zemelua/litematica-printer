@@ -1,5 +1,7 @@
 # Litematica Printer
 
+This branch adds automatic dirt-path creation for **Minecraft 26.1.2**. See [DIRT_PATHS.md](DIRT_PATHS.md) for installation, the `makePaths` setting, build instructions, and test coverage.
+
 ![GitHub issues](https://img.shields.io/github/issues-raw/aleksilassila/litematica-printer)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/aleksilassila/litematica-printer)
 ![GitHub all releases](https://img.shields.io/github/downloads/aleksilassila/litematica-printer/total)

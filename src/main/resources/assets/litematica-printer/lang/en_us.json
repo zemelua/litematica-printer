@@ -1,4 +1,7 @@
 {
+    "litematica-printer.config.generic.name.makePaths": "makePaths",
+    "litematica-printer.config.generic.prettyName.makePaths": "Make Dirt Paths",
+    "litematica-printer.config.generic.comment.makePaths": "Place dirt for schematic dirt paths, then flatten it with a shovel. Requires dirt and a shovel in survival, interactBlocks enabled, and air above the block. Does not clear snow or other obstructions.",
     "litematica-printer.config.generic.name.printingInterval": "printingInterval",
     "litematica-printer.config.generic.name.printingRange": "printingRange",
     "litematica-printer.config.generic.name.printingMode": "printingMode",
