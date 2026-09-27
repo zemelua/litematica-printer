@@ -21,6 +21,8 @@ public class Configs {
     public static final ConfigBoolean STRIP_LOGS = new ConfigBoolean("stripLogs", true).apply(GENERIC_KEY);
     public static final ConfigBoolean MAKE_PATHS = new ConfigBoolean("makePaths", true).apply(GENERIC_KEY);
     public static final ConfigBoolean CLEAR_SOIL_SNOW = new ConfigBoolean("clearSoilSnow", true).apply(GENERIC_KEY);
+    public static final ConfigBoolean EASY_PLACE_DIRT_FOR_GRASS = new ConfigBoolean("easyPlaceDirtForGrass", true).apply(GENERIC_KEY);
+    public static final ConfigBoolean IGNORE_CROP_AGE = new ConfigBoolean("ignoreCropAge", true).apply(GENERIC_KEY);
     public static final ConfigBoolean INTERACT_BLOCKS = new ConfigBoolean("interactBlocks", true).apply(GENERIC_KEY);
     public static final ConfigBoolean PRINT_IN_AIR = new ConfigBoolean("printInAir", false).apply(GENERIC_KEY);
     public static final ConfigBoolean ROTATE = new ConfigBoolean("rotate", true).apply(GENERIC_KEY);
@@ -35,6 +37,8 @@ public class Configs {
         list.add(STRIP_LOGS);
         list.add(MAKE_PATHS);
         list.add(CLEAR_SOIL_SNOW);
+        list.add(EASY_PLACE_DIRT_FOR_GRASS);
+        list.add(IGNORE_CROP_AGE);
         list.add(INTERACT_BLOCKS);
         list.add(PRINT_IN_AIR);
         list.add(ROTATE);

@@ -1,11 +1,11 @@
 # Automatic dirt paths for Minecraft 26.1.2
 
-This fork of sakura-ryoko/litematica-printer's `LTS/26.1` branch adds soil placement and shovel flattening to Litematica Printer 3.2.2. The custom release is `3.2.2-paths.2` and retains the `litematica_printer` mod ID: **replace the original Printer JAR, do not install both**.
+This fork of sakura-ryoko/litematica-printer's `LTS/26.1` branch adds soil placement and shovel flattening to Litematica Printer 3.2.2. The custom release is `3.2.2-paths.3` and retains the `litematica_printer` mod ID: **replace the original Printer JAR, do not install both**.
 
 ## Use
 
 1. Close Minecraft before changing the instance's mods. Back up the original Printer JAR outside the `mods` folder.
-2. Replace it with `litematica-printer-26.1.2-3.2.2-paths.2.jar`.
+2. Replace it with `litematica-printer-26.1.2-3.2.2-paths.3.jar`.
 3. In Litematica's Generic settings (`M + C` by default), enable `makePaths` (default: true) and `interactBlocks`.
 4. Keep dirt and a shovel in your inventory; using the hotbar is the simplest way to test. All seven vanilla shovel materials, including copper, are supported.
 5. Load a schematic containing **dirt path blocks**, enable printing, and move within the configured placement range.
@@ -23,6 +23,16 @@ The block above must be **air**, following vanilla shovel behavior. Plants, flui
 Only schematic dirt paths and farmland are eligible. Completed soil, unrelated blocks, snow blocks and powder snow remain untouched. Snow explicitly present in the schematic is preserved. Farm schematics may request crops or melon/pumpkin stems above the soil; snow there is removed before tilling and subsequent crop placement. Surrounding snow is not cleared, and this is not a continuous snow-clearing service for finished construction.
 
 Mining uses vanilla start/continue/stop destruction, once per actual client input tick, so even a wooden shovel or mining fatigue uses normal break speed. The printer pauses placement while mining. The target and tool are rechecked each tick; leaving reach, losing line of sight, changing the tool/schematic/layer range, disabling printing, opening a screen, losing window focus, manual attack/use, or disconnecting cancels the job. A single attempt times out after 200 ticks. Ordinary printer scans may retry remaining obstructions while enabled. The client waits for the local world to report snow removal before the next soil operation; server-side permissions still apply.
+
+## Easy Place substitutions and crop age
+
+`easyPlaceDirtForGrass` (default true) allows dirt at schematic grass-block positions with Litematica Easy Place enabled. Dirt in the main hand takes priority, then the offhand. Held grass blocks retain normal placement. In survival, when neither hand contains either material, dirt is selected from inventory only if grass blocks are unavailable. Creative keeps normal grass pick-block unless dirt is explicitly held. Placement restriction uses the same effective target, retaining the existing reach, layer, replaceability and placement checks.
+
+`ignoreCropAge` (default true) applies to Easy Place and Printer. Wheat, carrots, potatoes, beetroots, melon stems, pumpkin stems, nether wart, cocoa and sweet berry bushes are planted at age zero using their normal planting item (seeds, carrots, potatoes, etc.). A crop of the same type already in the world is accepted at any age. Cocoa facing and all non-age properties remain significant. Attached stems, multi-block pitcher crops and unrelated age-bearing blocks are not substituted. Normal farmland/support conditions still apply.
+
+These are operation-local placement targets. The saved schematic, rendered schematic, verifier and material list are unchanged; the verifier can still show grass/dirt and crop-age differences. This is not forced growth or replacement of an existing solid block. Disable each setting to restore the corresponding original placement behavior.
+
+Manual checks: with Printer off and Easy Place on, place dirt into an empty grass target (held dirt, inventory-only dirt, grass also available, placement restriction on/off, creative). Plant mature schematic wheat using seeds, then retry when actual wheat is at an intermediate age; it must not be broken/replanted. Repeat for carrots, beetroot and stems, and ensure wrong crop types and wrong cocoa facing are not accepted. Repeat planting using Printer and test both feature toggles off.
 
 ## Build and tests
 
