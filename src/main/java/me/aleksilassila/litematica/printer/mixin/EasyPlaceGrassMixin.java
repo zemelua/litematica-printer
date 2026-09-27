@@ -5,6 +5,8 @@ import fi.dy.masa.litematica.world.WorldSchematic;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.implementation.EasyPlaceGrassSubstitution;
 import me.aleksilassila.litematica.printer.implementation.CropPlacement;
+import me.aleksilassila.litematica.printer.implementation.WrongBlockMining;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -12,9 +14,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = WorldUtils.class, remap = false)
 public class EasyPlaceGrassMixin {
+    @Inject(method = "doEasyPlaceAction", at = @At("HEAD"), cancellable = true)
+    private static void printer$repairWrongBlock(Minecraft client, CallbackInfoReturnable<InteractionResult> cir) {
+        if (WrongBlockMining.handleEasyPlace(client)) cir.setReturnValue(InteractionResult.SUCCESS);
+    }
     // Both the automatic pick/placement and its placement restriction must see the same target.
     // Leave rendering, verification, material lists and ordinary schematic pick-block unchanged.
     @Redirect(method = {"doEasyPlaceAction", "placementRestrictionInEffect"},

@@ -1,11 +1,11 @@
 # Automatic dirt paths for Minecraft 26.1.2
 
-This fork of sakura-ryoko/litematica-printer's `LTS/26.1` branch adds soil placement and shovel flattening to Litematica Printer 3.2.2. The custom release is `3.2.2-paths.3` and retains the `litematica_printer` mod ID: **replace the original Printer JAR, do not install both**.
+This fork of sakura-ryoko/litematica-printer's `LTS/26.1` branch adds soil placement and shovel flattening to Litematica Printer 3.2.2. The custom release is `3.2.2-paths.4` and retains the `litematica_printer` mod ID: **replace the original Printer JAR, do not install both**.
 
 ## Use
 
 1. Close Minecraft before changing the instance's mods. Back up the original Printer JAR outside the `mods` folder.
-2. Replace it with `litematica-printer-26.1.2-3.2.2-paths.3.jar`.
+2. Replace it with `litematica-printer-26.1.2-3.2.2-paths.4.jar`.
 3. In Litematica's Generic settings (`M + C` by default), enable `makePaths` (default: true) and `interactBlocks`.
 4. Keep dirt and a shovel in your inventory; using the hotbar is the simplest way to test. All seven vanilla shovel materials, including copper, are supported.
 5. Load a schematic containing **dirt path blocks**, enable printing, and move within the configured placement range.
@@ -33,6 +33,18 @@ Mining uses vanilla start/continue/stop destruction, once per actual client inpu
 These are operation-local placement targets. The saved schematic, rendered schematic, verifier and material list are unchanged; the verifier can still show grass/dirt and crop-age differences. This is not forced growth or replacement of an existing solid block. Disable each setting to restore the corresponding original placement behavior.
 
 Manual checks: with Printer off and Easy Place on, place dirt into an empty grass target (held dirt, inventory-only dirt, grass also available, placement restriction on/off, creative). Plant mature schematic wheat using seeds, then retry when actual wheat is at an intermediate age; it must not be broken/replanted. Repeat for carrots, beetroot and stems, and ensure wrong crop types and wrong cocoa facing are not accepted. Repeat planting using Printer and test both feature toggles off.
+
+## Wrong block removal
+
+`breakWrongBlocks` defaults to **false**. Enable it with `interactBlocks` to mine a different block type occupying a non-air schematic position. Printer removes the obstruction, then normal placement resumes after the local world reflects the break. Easy Place supports the same removal when holding the use/right-click button while aiming at the actual wrong block. Keep Easy Place hold mode enabled for repeated placement after removal, or click again to place. Releasing use or moving the crosshair away cancels Easy Place mining.
+
+Scope is deliberately limited to **different block types at requested placement positions**. It does not clear schematic air or rebuild same-type blocks for facing, moisture, growth, connectivity or other property differences. It preserves permitted dirt-for-grass substitutes, soil awaiting shovel/hoe transformation, matching log stripping pairs, and naturally attached melon/pumpkin stems. Block entities (including chests, furnaces, signs and spawners), unbreakable blocks, fluids and blocks that can be replaced by ordinary placement are excluded.
+
+Tools are selected from inventory by base destroy speed, preferring the held item on ties. Survival requires a harvest-capable tool where vanilla requires one, and avoids a tool whose next damage would break it. Bare-hand mining is allowed for blocks that do not require a harvest tool. Vanilla handles actual speed, effects, enchantments, durability and server permission. No instant-break packet shortcut is used.
+
+A shared mining controller serializes snow removal and wrong-block removal. It revalidates world/player identity, reach, visibility, settings, layer range and held item each client tick. Wrong-block jobs additionally require both the original schematic state and the actual state to remain unchanged; removal stops if the block becomes air, correct, or another block. Attempts time out after 1200 ticks and may be retried by later enabled scans. The replacement material is needed for placement, not for removal.
+
+Manual checks: Printer on with stone at a schematic plank position; Easy Place only with use held/released; correct/missing mining tool; setting off during mining; view/range/layer/schematic changes; protected chest and bedrock; schematic air; crop age and dirt-for-grass substitutes; existing snow clearing and original log stripping. Live client/multiplayer behavior remains unverified.
 
 ## Build and tests
 

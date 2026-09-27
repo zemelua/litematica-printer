@@ -5,7 +5,8 @@ import fi.dy.masa.litematica.util.RayTraceUtils;
 import fi.dy.masa.litematica.world.SchematicWorldHandler;
 import fi.dy.masa.litematica.world.WorldSchematic;
 import me.aleksilassila.litematica.printer.actions.Action;
-import me.aleksilassila.litematica.printer.actions.ClearSoilSnowAction;
+import me.aleksilassila.litematica.printer.actions.BlockMiningAction;
+import me.aleksilassila.litematica.printer.implementation.WrongBlockMining;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.Hotkeys;
 import me.aleksilassila.litematica.printer.guides.Guide;
@@ -37,7 +38,7 @@ public class Printer {
     }
 
     public boolean onGameTick() {
-        if (ClearSoilSnowAction.isActive()) {
+        if (BlockMiningAction.isActive()) {
             return false;
         }
         WorldSchematic worldSchematic = SchematicWorldHandler.getSchematicWorld();
@@ -67,6 +68,11 @@ public class Printer {
                 continue;
             }
 
+            List<Action> repair = WrongBlockMining.actions(state, player, false);
+            if (!repair.isEmpty()) {
+                actionHandler.addActions(repair.toArray(Action[]::new));
+                return true;
+            }
             Guide[] guides = interactionGuides.getInteractionGuides(state);
 
             BlockHitResult result = RayTraceUtils.traceToSchematicWorld(player, 10, true, true);
