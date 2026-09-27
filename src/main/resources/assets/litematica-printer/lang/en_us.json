@@ -46,5 +46,8 @@
     "litematica-printer.config.generic.comment.ignoreCropAge": "Easy Place and Printer plant supported crops at age zero and accept existing crops of the same type regardless of age. Other properties remain significant. Does not change schematic rendering or verification.",
     "litematica-printer.config.generic.name.breakWrongBlocks": "breakWrongBlocks",
     "litematica-printer.config.generic.prettyName.breakWrongBlocks": "Break Wrong Block Types",
-    "litematica-printer.config.generic.comment.breakWrongBlocks": "Mine different block types at non-air schematic positions in Printer and Easy Place. Skips state-only differences, block entities, accepted substitutes and transformation steps. Default OFF. Hold use on the target for Easy Place mining."
+    "litematica-printer.config.generic.comment.breakWrongBlocks": "Mine different block types at non-air schematic positions in Printer and Easy Place. Skips state-only differences, block entities, accepted substitutes and transformation steps. Default OFF. Hold use on the target for Easy Place mining.",
+    "litematica-printer.config.generic.name.waterlogBlocks": "waterlogBlocks",
+    "litematica-printer.config.generic.prettyName.waterlogBlocks": "Waterlog Placed Blocks",
+    "litematica-printer.config.generic.comment.waterlogBlocks": "Use a water bucket when a matching dry block should be waterlogged. Requires a water bucket and interactBlocks. Leaves already-waterlogged blocks alone; never drains water."
 }

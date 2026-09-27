@@ -46,5 +46,8 @@
     "litematica-printer.config.generic.comment.ignoreCropAge": "Easy PlaceとPrinterで対応作物を成長段階0で植え、同じ種類の作物は成長段階にかかわらず配置済みと扱います。向きなどは区別します。設計図表示や検証の判定は変更しません。",
     "litematica-printer.config.generic.name.breakWrongBlocks": "breakWrongBlocks",
     "litematica-printer.config.generic.prettyName.breakWrongBlocks": "間違った種類のブロックを破壊",
-    "litematica-printer.config.generic.comment.breakWrongBlocks": "PrinterとEasy Placeで設計図の配置位置にある別種類のブロックを採掘します。空気の位置、同種の状態差、ブロックエンティティ、許可した代用・加工途中は対象外。初期値OFF。Easy Placeでは右クリックを押し続けます。"
+    "litematica-printer.config.generic.comment.breakWrongBlocks": "PrinterとEasy Placeで設計図の配置位置にある別種類のブロックを採掘します。空気の位置、同種の状態差、ブロックエンティティ、許可した代用・加工途中は対象外。初期値OFF。Easy Placeでは右クリックを押し続けます。",
+    "litematica-printer.config.generic.name.waterlogBlocks": "waterlogBlocks",
+    "litematica-printer.config.generic.prettyName.waterlogBlocks": "水没ブロックに水を入れる",
+    "litematica-printer.config.generic.comment.waterlogBlocks": "設計図がwaterlogged=trueで、同じ形状の乾いたブロックがある場合に水入りバケツを使います。水入りバケツとinteractBlocksが必要です。既に水没している場合は何もしません。"
 }

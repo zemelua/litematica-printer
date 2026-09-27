@@ -1,11 +1,11 @@
 # Automatic dirt paths for Minecraft 26.1.2
 
-This fork of sakura-ryoko/litematica-printer's `LTS/26.1` branch adds soil placement and shovel flattening to Litematica Printer 3.2.2. The custom release is `3.2.2-paths.5` and retains the `litematica_printer` mod ID: **replace the original Printer JAR, do not install both**.
+This fork of sakura-ryoko/litematica-printer's `LTS/26.1` branch adds soil placement and shovel flattening to Litematica Printer 3.2.2. The custom release is `3.2.2-paths.6` and retains the `litematica_printer` mod ID: **replace the original Printer JAR, do not install both**.
 
 ## Use
 
 1. Close Minecraft before changing the instance's mods. Back up the original Printer JAR outside the `mods` folder.
-2. Replace it with `litematica-printer-26.1.2-3.2.2-paths.5.jar`.
+2. Replace it with `litematica-printer-26.1.2-3.2.2-paths.6.jar`.
 3. In Litematica's Generic settings (`M + C` by default), enable `makePaths` (default: true) and `interactBlocks`.
 4. Keep dirt and a shovel in your inventory; using the hotbar is the simplest way to test. All seven vanilla shovel materials, including copper, are supported.
 5. Load a schematic containing **dirt path blocks**, enable printing, and move within the configured placement range.
@@ -49,6 +49,14 @@ Manual checks: Printer on with stone at a schematic plank position; Easy Place o
 ## paths.5 fix
 
 Earlier versions applied grass-to-dirt substitution only to the legacy Easy Place path, leaving Printer to request grass items. The shared placement-target resolver is now used by Printer, legacy Easy Place and rewritten Easy Place, including their placement restrictions. Existing dirt is kept complete after inventory or hand changes. Tests now check the Printer call site, dirt material resolution, completed dirt/grass, and hook locations in both Easy Place implementations. No instance config or installed mod is modified by building the artifact.
+
+## Waterlogged blocks (paths.6)
+
+`waterlogBlocks` defaults to true. With Printer and `interactBlocks` enabled, supply water buckets in inventory. The normal guide places the slab/block first; a dedicated waterlogging guide then uses one water bucket after the correct dry block exists. Both top and bottom spruce slabs are supported, along with other vanilla liquid containers with a `waterlogged` property. All properties other than waterlogged must already match. Double slabs and water-evaporating environments are skipped.
+
+Unlike ordinary block interactions, buckets use `Item.use` and calculate their own ray from the player's view. The action revalidates the schematic and actual block at send time, equips a water bucket, temporarily aims at the block, checks the full vanilla bucket ray, calls normal `gameMode.useItem` exactly once, and restores the view in a `finally` block. The normal use-item packet carries the target rotation. It does not call `useItemOn` first, collect water sources, refill buckets or drain completed waterlogged blocks. Survival consumes the supplied water; placement waits when no full bucket remains.
+
+Manual checks: empty position -> bottom spruce slab -> waterlogged slab; existing top slab; already wet slab; missing water bucket; changed/removed block before the queued action; obstacle in the line of sight; water evaporating dimension; survival and creative, with Printer rotation on and off. Confirm no adjacent water spill and no automatic water pickup. Live gameplay remains unverified.
 
 ## Build and tests
 
