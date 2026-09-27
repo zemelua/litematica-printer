@@ -1,11 +1,11 @@
 # Automatic dirt paths for Minecraft 26.1.2
 
-This fork of sakura-ryoko/litematica-printer's `LTS/26.1` branch adds soil placement and shovel flattening to Litematica Printer 3.2.2. The custom release is `3.2.2-paths.6` and retains the `litematica_printer` mod ID: **replace the original Printer JAR, do not install both**.
+This fork of sakura-ryoko/litematica-printer's `LTS/26.1` branch adds soil placement and shovel flattening to Litematica Printer 3.2.2. The custom release is `3.2.2-paths.7` and retains the `litematica_printer` mod ID: **replace the original Printer JAR, do not install both**.
 
 ## Use
 
 1. Close Minecraft before changing the instance's mods. Back up the original Printer JAR outside the `mods` folder.
-2. Replace it with `litematica-printer-26.1.2-3.2.2-paths.6.jar`.
+2. Replace it with `litematica-printer-26.1.2-3.2.2-paths.7.jar`.
 3. In Litematica's Generic settings (`M + C` by default), enable `makePaths` (default: true) and `interactBlocks`.
 4. Keep dirt and a shovel in your inventory; using the hotbar is the simplest way to test. All seven vanilla shovel materials, including copper, are supported.
 5. Load a schematic containing **dirt path blocks**, enable printing, and move within the configured placement range.
@@ -88,3 +88,11 @@ Use a small disposable test area, with printing restricted to its schematic:
 - Regression: normal placement, original log stripping, and farmland tilling still work.
 
 The source remains under the repository's AGPL-3.0 license. The bundled license filename and JAR metadata now match `LICENSE.md`; upstream's stale CC0 metadata was not used to relicense the source.
+
+## Extra blocks and mining fixes (paths.7)
+
+`breakExtraBlocks` defaults OFF and is independent of `breakWrongBlocks`. With Printer and `interactBlocks` enabled it mines non-air blocks where the schematic is air, only inside enabled/rendered subregion boxes (not their enclosing box or entire chunks). Loaded schematic chunks, render layers, range and visibility are required. Plants and snow are included; block entities, liquids and unbreakable blocks are excluded. Boundary and setting eligibility are rechecked throughout mining. Easy Place retains its non-air target behavior.
+
+Mining is no longer excluded by the placement-only one-block player clearance. Visibility uses individual shape pieces and face centers, with reach measured at the actual hit surface. `printingDebug` emits throttled candidate/visibility/tool diagnostics. The reported live symptom has not been reproduced in-game.
+
+Manual checks: toggle each breaking option independently; enabled/disabled/rotated subregions; gaps between subregions; outside region; layer restriction; nearest blocks; partly occluded slabs/fences; usable/missing tools; cancellation after a region moves or is disabled.

@@ -64,7 +64,7 @@ public class Printer {
         findBlock:
         for (BlockPos position : positions) {
             SchematicBlockState state = new SchematicBlockState(player.level(), worldSchematic, position);
-            if (state.targetState.equals(state.currentState) || state.targetState.isAir()) {
+            if (state.targetState.equals(state.currentState)) {
                 continue;
             }
 
@@ -73,6 +73,10 @@ public class Printer {
                 actionHandler.addActions(repair.toArray(Action[]::new));
                 return true;
             }
+            if (state.targetState.isAir()) continue;
+            // Keep the original placement clearance, but do not apply it to mining.
+            Vec3 center = Vec3.atCenterOf(position);
+            if (player.position().distanceToSqr(center) <= 1 || player.getEyePosition().distanceToSqr(center) <= 1) continue;
             Guide[] guides = interactionGuides.getInteractionGuides(state);
 
             BlockHitResult result = RayTraceUtils.traceToSchematicWorld(player, 10, true, true);
@@ -119,12 +123,6 @@ public class Printer {
         }
 
         return positions.stream()
-                .filter(p ->
-                {
-                    Vec3 vec = Vec3.atCenterOf(p);
-                    return this.player.position().distanceToSqr(vec) > 1
-                            && this.player.getEyePosition().distanceToSqr(vec) > 1;
-                })
                 .sorted((a, b) ->
                 {
                     double aDistance = this.player.position().distanceToSqr(Vec3.atCenterOf(a));

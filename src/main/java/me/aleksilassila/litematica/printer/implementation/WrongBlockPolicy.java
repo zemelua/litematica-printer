@@ -25,6 +25,12 @@ public final class WrongBlockPolicy {
         return true;
     }
 
+    public static boolean shouldBreakExtra(BlockState target, BlockState current, boolean insideRegion) {
+        // Replaceable plants and snow are extras too; fluids and block entities remain protected.
+        return insideRegion && target.isAir() && !current.isAir()
+                && !(current.getBlock() instanceof LiquidBlock) && !current.hasBlockEntity();
+    }
+
     public static boolean unchanged(BlockState initialTarget, BlockState initialActual,
                                      BlockState targetNow, BlockState actualNow) {
         return initialTarget.equals(targetNow) && initialActual.equals(actualNow);

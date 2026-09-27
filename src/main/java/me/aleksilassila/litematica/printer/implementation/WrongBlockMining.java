@@ -22,25 +22,41 @@ import net.minecraft.world.phys.Vec3;
 
 public final class WrongBlockMining {
     private WrongBlockMining() {}
+    private static long nextDiagnostic;
+
+    private static void diagnostic(SchematicBlockState state, String reason) {
+        if (!Configs.PRINT_DEBUG.getBooleanValue()) return;
+        long now = System.nanoTime();
+        if (now < nextDiagnostic) return;
+        nextDiagnostic = now + 3_000_000_000L;
+        me.aleksilassila.litematica.printer.Printer.printDebug(
+                "Mining {} at {} (actual {}, target {})", reason, state.blockPos, state.currentState, state.targetState);
+    }
 
     public static boolean eligible(SchematicBlockState state) {
-        return Configs.BREAK_WRONG_BLOCKS.getBooleanValue() && Configs.INTERACT_BLOCKS.getBooleanValue()
-                && WrongBlockPolicy.shouldBreak(state.targetState, state.currentState,
-                        Configs.EASY_PLACE_DIRT_FOR_GRASS.getBooleanValue(),
-                        LogStrippingGuide.STRIPPED_BLOCKS.get(state.currentState.getBlock()) == state.targetState.getBlock())
-                && state.currentState.getDestroySpeed(state.world, state.blockPos) >= 0
+        if (!Configs.INTERACT_BLOCKS.getBooleanValue()) return false;
+        boolean permitted;
+        if (state.targetState.isAir()) {
+            permitted = Configs.BREAK_EXTRA_BLOCKS.getBooleanValue()
+                    && state.schematic.hasChunk(state.blockPos.getX() >> 4, state.blockPos.getZ() >> 4)
+                    && WrongBlockPolicy.shouldBreakExtra(state.targetState, state.currentState,
+                            SchematicMiningBounds.contains(state.blockPos));
+        } else {
+            permitted = Configs.BREAK_WRONG_BLOCKS.getBooleanValue()
+                    && WrongBlockPolicy.shouldBreak(state.targetState, state.currentState,
+                            Configs.EASY_PLACE_DIRT_FOR_GRASS.getBooleanValue(),
+                            LogStrippingGuide.STRIPPED_BLOCKS.get(state.currentState.getBlock()) == state.targetState.getBlock());
+        }
+        return permitted && state.currentState.getDestroySpeed(state.world, state.blockPos) >= 0
                 && state.world.getBlockEntity(state.blockPos) == null;
     }
 
     public static BlockHitResult hit(LocalPlayer player, SchematicBlockState state) {
         var shape = state.world.getBlockState(state.blockPos).getShape(state.world, state.blockPos);
-        if (shape.isEmpty()) return null;
-        Vec3 end = shape.bounds().getCenter().add(Vec3.atLowerCornerOf(state.blockPos));
         double range = Math.min(Configs.PRINTING_RANGE.getDoubleValue(), player.blockInteractionRange());
-        if (player.getEyePosition().distanceToSqr(end) > range * range) return null;
-        var hit = state.world.clip(new ClipContext(player.getEyePosition(), end,
-                ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
-        return hit.getType() == HitResult.Type.BLOCK && hit.getBlockPos().equals(state.blockPos) ? hit : null;
+        return MiningHit.find(shape, state.blockPos, player.getEyePosition(), range,
+                end -> state.world.clip(new ClipContext(player.getEyePosition(), end,
+                        ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player)));
     }
 
     public static boolean usableTool(ItemStack stack, BlockState block, boolean creative) {
@@ -69,10 +85,14 @@ public final class WrongBlockMining {
     }
 
     public static List<Action> actions(SchematicBlockState state, LocalPlayer player, boolean easyPlace) {
-        if (!eligible(state)) return List.of();
+        if ((easyPlace && state.targetState.isAir()) || !eligible(state)) return List.of();
         var hit = hit(player, state);
         int slot = toolSlot(player, state);
-        if (hit == null || slot < 0) return List.of();
+        if (hit == null || slot < 0) {
+            diagnostic(state, hit == null ? "waiting: no visible surface in reach" : "waiting: no usable mining tool");
+            return List.of();
+        }
+        diagnostic(state, "queued");
         var stack = player.getInventory().getNonEquipmentItems().get(slot);
         // PrepareAction does not switch to an empty slot; do that via a non-destructive select action.
         Action prepare;
