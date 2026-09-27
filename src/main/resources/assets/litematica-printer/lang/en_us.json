@@ -1,7 +1,7 @@
 {
     "litematica-printer.config.generic.name.makePaths": "makePaths",
     "litematica-printer.config.generic.prettyName.makePaths": "Make Dirt Paths",
-    "litematica-printer.config.generic.comment.makePaths": "Place dirt for schematic dirt paths, then flatten it with a shovel. Requires dirt and a shovel in survival, interactBlocks enabled, and air above the block. Does not clear snow or other obstructions.",
+    "litematica-printer.config.generic.comment.makePaths": "Place dirt for schematic dirt paths, then flatten with a shovel. Requires dirt, a shovel, interactBlocks and air above. Enable clearSoilSnow to remove blocking snow layers first.",
     "litematica-printer.config.generic.name.printingInterval": "printingInterval",
     "litematica-printer.config.generic.name.printingRange": "printingRange",
     "litematica-printer.config.generic.name.printingMode": "printingMode",
@@ -11,7 +11,6 @@
     "litematica-printer.config.generic.name.interactBlocks": "interactBlocks",
     "litematica-printer.config.generic.name.printInAir": "printInAir",
     "litematica-printer.config.generic.name.rotate": "rotate",
-
     "litematica-printer.config.generic.prettyName.printingInterval": "Printing Interval",
     "litematica-printer.config.generic.prettyName.printingRange": "Printing Range",
     "litematica-printer.config.generic.prettyName.printingMode": "Printing Mode",
@@ -21,7 +20,6 @@
     "litematica-printer.config.generic.prettyName.interactBlocks": "Interact Blocks",
     "litematica-printer.config.generic.prettyName.printInAir": "Print in Air",
     "litematica-printer.config.generic.prettyName.rotate": "Rotate",
-
     "litematica-printer.config.generic.comment.printingInterval": "Printing interval. Lower values mean faster printing speed.\nIf the printer creates \"ghost blocks\" or blocks are facing the wrong way, raise this value.",
     "litematica-printer.config.generic.comment.printingRange": "Printing block place range\nLower values are recommended for servers.",
     "litematica-printer.config.generic.comment.printingMode": "Autobuild / print loaded selection.\nBe aware that some servers and anticheat plugins do not allow printing.",
@@ -31,13 +29,13 @@
     "litematica-printer.config.generic.comment.interactBlocks": "Whether or not the printer should set block states.",
     "litematica-printer.config.generic.comment.printInAir": "Allow blocks to be placed in mid-air without requiring support blocks underneath.",
     "litematica-printer.config.generic.comment.rotate": "Alter the players yaw and pitch when placing blocks.",
-
     "litematica-printer.config.hotkeys.name.print": "print",
     "litematica-printer.config.hotkeys.name.togglePrintingMode": "togglePrintingMode",
-
     "litematica-printer.config.hotkeys.prettyName.print": "Print",
     "litematica-printer.config.hotkeys.prettyName.togglePrintingMode": "Toggle Printing Mode",
-
     "litematica-printer.config.hotkeys.comment.print": "Prints while pressed",
-    "litematica-printer.config.hotkeys.comment.togglePrintingMode": "Allows quickly toggling on/off Printing mode"
+    "litematica-printer.config.hotkeys.comment.togglePrintingMode": "Allows quickly toggling on/off Printing mode",
+    "litematica-printer.config.generic.name.clearSoilSnow": "clearSoilSnow",
+    "litematica-printer.config.generic.prettyName.clearSoilSnow": "Clear Snow Before Soil Work",
+    "litematica-printer.config.generic.comment.clearSoilSnow": "Use a shovel to clear snow layers blocking schematic paths or farmland. Farmland also requires a hoe. Leaves snow blocks, powder snow and schematic snow intact."
 }

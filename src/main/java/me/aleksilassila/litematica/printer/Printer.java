@@ -5,6 +5,7 @@ import fi.dy.masa.litematica.util.RayTraceUtils;
 import fi.dy.masa.litematica.world.SchematicWorldHandler;
 import fi.dy.masa.litematica.world.WorldSchematic;
 import me.aleksilassila.litematica.printer.actions.Action;
+import me.aleksilassila.litematica.printer.actions.ClearSoilSnowAction;
 import me.aleksilassila.litematica.printer.config.Configs;
 import me.aleksilassila.litematica.printer.config.Hotkeys;
 import me.aleksilassila.litematica.printer.guides.Guide;
@@ -36,6 +37,9 @@ public class Printer {
     }
 
     public boolean onGameTick() {
+        if (ClearSoilSnowAction.isActive()) {
+            return false;
+        }
         WorldSchematic worldSchematic = SchematicWorldHandler.getSchematicWorld();
 
         if (!actionHandler.acceptsActions()) {

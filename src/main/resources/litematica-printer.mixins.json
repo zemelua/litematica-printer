@@ -4,6 +4,7 @@
   "package": "me.aleksilassila.litematica.printer.mixin",
   "compatibilityLevel": "JAVA_25",
   "client": [
+    "SnowMiningMixin",
     "AxeItemAccessor",
     "ConfigsMixin",
     "GuiConfigsMixin",

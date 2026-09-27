@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Uses the normal upward-facing block interaction, after the server confirms the soil exists. */
 public class PathFlatteningGuide extends InteractionGuide {
-    private static final List<Item> SHOVELS = List.of(
+    public static final List<Item> SHOVELS = List.of(
             Items.NETHERITE_SHOVEL, Items.DIAMOND_SHOVEL, Items.IRON_SHOVEL,
             Items.COPPER_SHOVEL, Items.GOLDEN_SHOVEL, Items.STONE_SHOVEL, Items.WOODEN_SHOVEL);
 

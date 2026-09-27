@@ -22,6 +22,7 @@ public class Guides {
         registerGuide(RotatingBlockGuide.class, AbstractSkullBlock.class, SignBlock.class, AbstractBannerBlock.class);
         registerGuide(SlabGuide.class, SlabBlock.class);
         registerGuide(TorchGuide.class, TorchBlock.class);
+        registerGuide(SoilSnowGuide.class, DirtPathBlock.class, FarmlandBlock.class);
         registerGuide(FarmlandGuide.class, FarmlandBlock.class);
         registerGuide(TillingGuide.class, FarmlandBlock.class);
         registerGuide(PathFlatteningGuide.class, DirtPathBlock.class);

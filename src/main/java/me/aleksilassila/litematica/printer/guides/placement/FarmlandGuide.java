@@ -1,6 +1,7 @@
 package me.aleksilassila.litematica.printer.guides.placement;
 
 import me.aleksilassila.litematica.printer.SchematicBlockState;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -19,6 +20,16 @@ public class FarmlandGuide extends GeneralPlacementGuide {
 
     public FarmlandGuide(SchematicBlockState state) {
         super(state);
+    }
+
+    @Override
+    public boolean canExecute(LocalPlayer player) {
+        return state.world.getBlockState(state.blockPos.above()).isAir() && super.canExecute(player);
+    }
+
+    @Override
+    public boolean skipOtherGuides() {
+        return !state.world.getBlockState(state.blockPos.above()).isAir();
     }
 
     @Override
